@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import Image from 'next/image';
 import { cn } from "@/lib/utils";
+import Image from 'next/image';
 
 interface CompanyLogoProps {
   src?: string;
@@ -10,10 +10,9 @@ interface CompanyLogoProps {
   symbol: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
-  sizes?: string;
 }
 
-const CompanyLogo = ({ src, name, symbol, className, size = 'md', sizes }: CompanyLogoProps) => {
+const CompanyLogo = ({ src, name, symbol, className, size = 'md' }: CompanyLogoProps) => {
   const [error, setError] = useState(false);
 
   // Fallback Clearbit URL if Finnhub logo is missing
@@ -35,7 +34,7 @@ const CompanyLogo = ({ src, name, symbol, className, size = 'md', sizes }: Compa
   if (currentSrc && !error) {
     return (
       <div className={cn(
-        "relative rounded-lg bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-700/50 flex-shrink-0",
+        "rounded-lg bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-700/50 flex-shrink-0",
         sizeClasses[size],
         className
       )}>
@@ -43,8 +42,7 @@ const CompanyLogo = ({ src, name, symbol, className, size = 'md', sizes }: Compa
           src={currentSrc} 
           alt={name || symbol} 
           fill
-          sizes={sizes}
-          className="object-contain p-1"
+          className="w-full h-full object-contain p-1"
           onError={() => setError(true)}
         />
       </div>

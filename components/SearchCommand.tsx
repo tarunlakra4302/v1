@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState } from "react"
 import { CommandDialog, CommandEmpty, CommandInput, CommandList } from "@/components/ui/command"
 import {Button} from "@/components/ui/button";
 import {Loader2} from "lucide-react";
@@ -37,7 +37,7 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [])
 
-  const handleSearch = useCallback(async () => {
+  const handleSearch = async () => {
     if(!isSearchMode) return setStocks(initialStocks);
 
     setLoading(true)
@@ -49,7 +49,7 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
     } finally {
       setLoading(false)
     }
-  }, [isSearchMode, initialStocks, searchTerm]);
+  }
 
   const debouncedSearch = useDebounce(handleSearch, 300);
 

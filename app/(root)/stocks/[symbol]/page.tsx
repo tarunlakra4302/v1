@@ -1,5 +1,3 @@
-export const dynamic = "force-dynamic";
-
 import StockDetailClient from "@/components/StockDetailClient";
 import { 
   getQuote, 
@@ -9,7 +7,7 @@ import {
   getPeers,
   getRecommendation
 } from "@/lib/actions/finnhub.actions";
-import { getAuth } from "@/lib/better-auth/auth";
+import { auth } from "@/lib/better-auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
@@ -29,7 +27,6 @@ export async function generateMetadata({ params }: StockDetailsPageProps): Promi
 }
 
 export default async function StockDetails({ params }: StockDetailsPageProps) {
-  const auth = await getAuth();
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session?.user) redirect('/sign-in');
 

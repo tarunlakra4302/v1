@@ -61,7 +61,7 @@ const HeaderClient = ({ user, initialStocks, initialWatchlistSymbols }: HeaderCl
 
       <div className="flex items-center gap-4">
         <UserDropdown 
-          user={user} 
+          user={user as User} 
           initialStocks={initialStocks} 
           initialWatchlistSymbols={initialWatchlistSymbols}
         />

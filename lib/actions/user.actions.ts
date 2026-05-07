@@ -30,12 +30,12 @@ export const updateUserProfile = async (userId: string, data: Partial<User>) => 
         const db = mongoose.connection.db;
         if(!db) throw new Error('Mongoose connection not connected');
 
-        const updateData = { ...data };
-        delete (updateData as Record<string, unknown>).id;
-        delete (updateData as Record<string, unknown>).email;
+        const updateData = { ...data } as Record<string, unknown>;
+        delete updateData.id;
+        delete updateData.email;
 
         // Check if we need to use ObjectId
-        const query = { id: userId };
+        const query: Record<string, unknown> = { id: userId };
         
         // better-auth sometimes uses _id as the primary identifier
         const result = await db.collection('user').updateOne(

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { 
   ArrowUpRight, 
   ChevronRight,
@@ -14,6 +13,7 @@ import {
   BarChart3,
   Clock
 } from 'lucide-react';
+import Image from 'next/image';
 import CompanyLogo from './ui/CompanyLogo';
 import TradingViewWidget from './TradingViewWidget';
 import { cn, formatTimeAgo } from "@/lib/utils";
@@ -80,7 +80,6 @@ const DashboardOverview = ({
     }),
   };
   const visibleNews = (newsByTab[activeNewsTab] || initialNews).slice(0, 4);
-
   const handleAddToWatchlist = async (stock: TopStockData) => {
     if (!user?.email) {
       toast.error('You must be signed in to update your watchlist');
@@ -98,7 +97,7 @@ const DashboardOverview = ({
       await addToWatchlist({
         email: user.email,
         symbol,
-        company: (stock as unknown as { company?: string; name?: string }).company || (stock as unknown as { company?: string; name?: string }).name || symbol,
+        company: stock.company || symbol,
       });
 
       setWatchlistSymbols((prev) => new Set(prev).add(symbol));
@@ -283,7 +282,6 @@ const DashboardOverview = ({
                         src={stock.image} 
                         name={stock.company} 
                         symbol={stock.symbol} 
-                        sizes="48px"
                       />
                     </div>
                     <div>
@@ -355,7 +353,6 @@ const DashboardOverview = ({
                             name={stock.company} 
                             symbol={stock.symbol} 
                             size="sm"
-                            sizes="32px"
                           />
                           <div className="flex flex-col">
                             <span className="font-black text-sm tracking-tight">{stock.symbol}</span>
@@ -441,13 +438,12 @@ const DashboardOverview = ({
                     )}
                   </div>
                   {article.image && (
-                    <div className="relative w-24 h-24 rounded-[20px] overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all">
+                    <div className="w-24 h-24 rounded-[20px] overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all relative">
                       <Image 
                         src={article.image} 
                         alt="" 
                         fill
-                        sizes="(max-width: 768px) 100vw, 96px"
-                        className="object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-110 group-hover:scale-100" 
+                        className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-110 group-hover:scale-100" 
                       />
                     </div>
                   )}

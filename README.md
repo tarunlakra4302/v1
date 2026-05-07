@@ -1,6 +1,6 @@
-# Inertia | Institutional Alpha Signal & Risk Engine
+# QuantFlow | Institutional Alpha Signal & Risk Engine
 
-Inertia is a high-performance signal orchestration platform designed for systematic traders and quant analysts. It transforms fragmented market data into high-fidelity alpha signals using a multi-factor ranking system and provides real-time probabilistic risk modeling.
+QuantFlow is a high-performance signal orchestration platform designed for systematic traders and quant analysts. It transforms fragmented market data into high-fidelity alpha signals using a multi-factor ranking system and provides real-time probabilistic risk modeling.
 
 ## 🏛️ Engineering Architecture
 - **Domain-Driven Design (DDD)**: Core business logic (Signal Generation, Risk Modeling) is decoupled from the framework layer.
@@ -32,4 +32,3 @@ Inertia is a high-performance signal orchestration platform designed for systema
 
 ---
 *Developed for professionals who require signal over noise.*
-# Inertia

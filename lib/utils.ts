@@ -63,12 +63,12 @@ export const formatArticle = (art: RawNewsArticle, hasTicker: boolean, ticker: s
     id: art.id || idx,
     headline: art.headline || "",
     summary: art.summary || "",
-    source: art.source || "",
     url: art.url || "",
-    datetime: art.datetime || 0,
-    category: art.category || "",
-    related: art.related || "",
     image: art.image,
+    source: art.source || "News",
+    datetime: art.datetime || Date.now(),
+    category: art.category || "General",
+    related: hasTicker ? (ticker || "") : (art.related || "")
   };
 };
 

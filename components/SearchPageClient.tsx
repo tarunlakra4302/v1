@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Search } from "lucide-react";
+import { Loader2, Search, Plus } from "lucide-react";
 import CompanyLogo from "./ui/CompanyLogo";
 import { searchStocks } from "@/lib/actions/finnhub.actions";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
-import { Plus } from "lucide-react";
 import { addToWatchlist } from "@/lib/actions/watchlist.actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";

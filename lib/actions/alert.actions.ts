@@ -11,7 +11,7 @@ export async function getAlertsByEmail(email: string) {
     const db = mongoose.connection.db;
     if (!db) throw new Error('MongoDB connection not found');
 
-    const user = await db.collection('user').findOne<{ id?: string; _id?: unknown }>({ email });
+    const user = await db.collection('user').findOne<{ id?: string; _id?: string }>({ email });
     if (!user) return [];
 
     const userId = user.id || String(user._id);
@@ -37,7 +37,7 @@ export async function createAlert(data: {
     const db = mongoose.connection.db;
     if (!db) throw new Error('MongoDB connection not found');
 
-    const user = await db.collection('user').findOne<{ id?: string; _id?: unknown }>({ email: data.email });
+    const user = await db.collection('user').findOne<{ id?: string; _id?: string }>({ email: data.email });
     if (!user) throw new Error('User not found');
 
     const userId = user.id || String(user._id);

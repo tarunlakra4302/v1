@@ -1,14 +1,13 @@
 import Header from "@/components/Header";
-import { getAuth } from "@/lib/better-auth/auth";
+import {auth} from "@/lib/better-auth/auth";
 import {headers} from "next/headers";
 import {redirect} from "next/navigation";
 import {connectToDatabase} from "@/database/mongoose";
 import { OmniSearch } from "@/src/features/terminal/components/OmniSearch";
 
-export const dynamic = "force-dynamic";
+import { ObjectId } from "mongodb";
 
 const Layout = async ({ children }: { children : React.ReactNode }) => {
-    const auth = await getAuth();
     const session = await auth.api.getSession({ headers: await headers() });
 
     if(!session?.user) redirect('/sign-in');
@@ -16,15 +15,21 @@ const Layout = async ({ children }: { children : React.ReactNode }) => {
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
     
-    if (!db) {
-        console.error("Database connection failed in Layout");
-        redirect('/sign-in');
+    // session.user.id might be a string that needs to be converted to ObjectId for _id field
+    let userId;
+    try {
+        userId = new ObjectId(session.user.id);
+    } catch {
+        userId = session.user.id;
     }
 
-    const dbUser = await db.collection('user').findOne({ 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        $or: [{ id: session.user.id }, { _id: session.user.id as any }] 
-    });
+    const dbUser = await db?.collection('user').findOne({ 
+        $or: [
+            { id: session.user.id }, 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            { _id: userId as any }
+        ] 
+    }) as User | null;
 
     const user = {
         id: session.user.id,
@@ -39,6 +44,7 @@ const Layout = async ({ children }: { children : React.ReactNode }) => {
 
     return (
         <main className="min-h-screen bg-[#050505]">
+            <OmniSearch />
             <Header user={user} />
             {children}
         </main>

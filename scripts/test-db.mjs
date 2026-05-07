@@ -10,21 +10,18 @@ async function main() {
 
   try {
     const startedAt = Date.now();
-    await mongoose.connect(uri, { 
-      bufferCommands: false,
-      serverSelectionTimeoutMS: 5000 
-    });
+    await mongoose.connect(uri, { bufferCommands: false });
     const elapsed = Date.now() - startedAt;
 
-    console.log(`Connected to database in ${elapsed}ms`);
+    const dbName = mongoose.connection?.name || '(unknown)';
+    const host = mongoose.connection?.host || '(unknown)';
+
+    console.log(`OK: Connected to MongoDB [db="${dbName}", host="${host}", time=${elapsed}ms]`);
     await mongoose.connection.close();
     process.exit(0);
   } catch (err) {
     console.error('ERROR: Database connection failed');
-    // Sanitize error to prevent URI leak
-    const errorMessage = err instanceof Error ? err.message : String(err);
-    console.error(errorMessage.replace(uri, '***MONGODB_URI***'));
-    
+    console.error(err);
     try { await mongoose.connection.close(); } catch {}
     process.exit(1);
   }

@@ -55,12 +55,6 @@ declare global {
         href: string;
     };
 
-    type UserForNewsEmail = {
-        id: string;
-        email: string;
-        name: string;
-    };
-
     type SearchCommandProps = {
         renderAs?: 'button' | 'text';
         label?: string;
@@ -154,8 +148,6 @@ declare global {
             peExclExtraTTM?: number;
             epsExclExtraItemsTTM?: number;
             totalEmployees?: number;
-            '3MonthPriceReturnDaily'?: number;
-            dividendYieldIndicatedAnnual?: number;
             [key: string]: unknown;
         };
     };
@@ -246,24 +238,7 @@ declare global {
         related?: string;
     };
 
-    type PeerStockData = {
-        symbol: string;
-        quote: QuoteData;
-        profile: ProfileData;
-    };
-
-    type RecommendationData = {
-        strongBuy?: number;
-        buy?: number;
-        hold?: number;
-        sell?: number;
-        strongSell?: number;
-        period?: string;
-        symbol?: string;
-    };
-
     type Alert = {
-        _id: string;
         id: string;
         symbol: string;
         company: string;
@@ -301,6 +276,27 @@ declare global {
         low: number;
         close: number;
         price: number;
+    };
+
+    type SentimentData = {
+        buzz: { buzz: number };
+        sentiment: { bullishPercent: number };
+    };
+
+    type PeerStockData = {
+        symbol: string;
+        quote: QuoteData;
+        profile: ProfileData;
+    };
+
+    type RecommendationData = {
+        buy: number;
+        hold: number;
+        sell: number;
+        strongBuy: number;
+        strongSell: number;
+        period: string;
+        symbol: string;
     };
 
     type DashboardProps = {
