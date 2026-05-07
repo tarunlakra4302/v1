@@ -32,3 +32,4 @@ QuantFlow is a high-performance signal orchestration platform designed for syste
 
 ---
 *Developed for professionals who require signal over noise.*
+# Inertia
