@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { 
   ArrowUpRight, 
   ChevronRight,
@@ -21,11 +22,11 @@ import { addToWatchlist } from '@/lib/actions/watchlist.actions';
 import { toast } from 'sonner';
 
 interface DashboardOverviewProps {
-  initialWatchlist: any[];
-  initialNews: any[];
-  initialIndices: any[];
-  initialTopStocks: any[];
-  user: any;
+  initialWatchlist: DashboardWatchlistItem[];
+  initialNews: MarketNewsArticle[];
+  initialIndices: IndexData[];
+  initialTopStocks: TopStockData[];
+  user: User;
   portfolioRisk: {
     var: number;
     sharpeRatio: number;
@@ -70,7 +71,7 @@ const DashboardOverview = ({
     ETFs: 'AMEX:SPY',
   };
   const newsTabs = ['Active Feed', 'Sector News', 'Global Macro'];
-  const newsByTab: Record<string, any[]> = {
+  const newsByTab: Record<string, MarketNewsArticle[]> = {
     'Active Feed': initialNews,
     'Sector News': initialNews.filter((article) => Boolean(article.related)),
     'Global Macro': initialNews.filter((article) => {
@@ -80,7 +81,7 @@ const DashboardOverview = ({
   };
   const visibleNews = (newsByTab[activeNewsTab] || initialNews).slice(0, 4);
 
-  const handleAddToWatchlist = async (stock: any) => {
+  const handleAddToWatchlist = async (stock: TopStockData) => {
     if (!user?.email) {
       toast.error('You must be signed in to update your watchlist');
       return;
@@ -97,7 +98,7 @@ const DashboardOverview = ({
       await addToWatchlist({
         email: user.email,
         symbol,
-        company: stock.company || stock.name || symbol,
+        company: (stock as unknown as { company?: string; name?: string }).company || (stock as unknown as { company?: string; name?: string }).name || symbol,
       });
 
       setWatchlistSymbols((prev) => new Set(prev).add(symbol));
@@ -438,11 +439,12 @@ const DashboardOverview = ({
                     )}
                   </div>
                   {article.image && (
-                    <div className="w-24 h-24 rounded-[20px] overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all">
-                      <img 
+                    <div className="relative w-24 h-24 rounded-[20px] overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all">
+                      <Image 
                         src={article.image} 
                         alt="" 
-                        className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-110 group-hover:scale-100" 
+                        fill
+                        className="object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-110 group-hover:scale-100" 
                       />
                     </div>
                   )}

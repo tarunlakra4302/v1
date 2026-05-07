@@ -30,10 +30,12 @@ export const updateUserProfile = async (userId: string, data: Partial<User>) => 
         const db = mongoose.connection.db;
         if(!db) throw new Error('Mongoose connection not connected');
 
-        const { id, email, ...updateData } = data; // Don't allow updating id or email for now
+        const updateData = { ...data };
+        delete (updateData as Record<string, unknown>).id;
+        delete (updateData as Record<string, unknown>).email;
 
         // Check if we need to use ObjectId
-        let query: any = { id: userId };
+        const query = { id: userId };
         
         // better-auth sometimes uses _id as the primary identifier
         const result = await db.collection('user').updateOne(
@@ -44,6 +46,7 @@ export const updateUserProfile = async (userId: string, data: Partial<User>) => 
         if (result.matchedCount === 0) {
             // Try updating by _id
             await db.collection('user').updateOne(
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 { _id: userId as any },
                 { $set: updateData }
             );

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { cn } from "@/lib/utils";
 
 interface CompanyLogoProps {
@@ -33,14 +34,15 @@ const CompanyLogo = ({ src, name, symbol, className, size = 'md' }: CompanyLogoP
   if (currentSrc && !error) {
     return (
       <div className={cn(
-        "rounded-lg bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-700/50 flex-shrink-0",
+        "relative rounded-lg bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-700/50 flex-shrink-0",
         sizeClasses[size],
         className
       )}>
-        <img 
+        <Image 
           src={currentSrc} 
           alt={name || symbol} 
-          className="w-full h-full object-contain p-1"
+          fill
+          className="object-contain p-1"
           onError={() => setError(true)}
         />
       </div>

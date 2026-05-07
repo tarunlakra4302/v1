@@ -7,10 +7,7 @@ import SearchCommand from './SearchCommand';
 import UserDropdown from './UserDropdown';
 
 interface HeaderClientProps {
-  user: {
-    name: string;
-    email: string;
-  };
+  user: User;
   initialStocks: StockWithWatchlistStatus[];
   initialWatchlistSymbols: string[];
 }
@@ -64,7 +61,7 @@ const HeaderClient = ({ user, initialStocks, initialWatchlistSymbols }: HeaderCl
 
       <div className="flex items-center gap-4">
         <UserDropdown 
-          user={user as any} 
+          user={user} 
           initialStocks={initialStocks} 
           initialWatchlistSymbols={initialWatchlistSymbols}
         />

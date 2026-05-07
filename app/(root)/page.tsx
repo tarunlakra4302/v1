@@ -60,7 +60,7 @@ export default async function Home() {
           image: profile.logo,
           // Inertia Additions
           alphaScore: alphaReport.aggregateScore,
-          volatility: financials.metric?.['3MonthPriceReturnDaily'] || 0.02 // Proxy for volatility
+          volatility: (financials.metric?.['3MonthPriceReturnDaily'] as number) || 0.02 // Proxy for volatility
         };
       } catch (err) {
         console.error(`Error fetching data for ${symbol}:`, err);

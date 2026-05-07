@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { X, ChevronDown, Bell, Loader2 } from 'lucide-react';
 import { createAlert } from '@/lib/actions/alert.actions';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 
 interface PriceAlertModalProps {
   isOpen: boolean;

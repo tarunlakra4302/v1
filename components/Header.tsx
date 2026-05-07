@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { searchStocks } from "@/lib/actions/finnhub.actions";
 import { getWatchlistSymbolsByEmail } from "@/lib/actions/watchlist.actions";
 import HeaderClient from "@/components/HeaderClient";

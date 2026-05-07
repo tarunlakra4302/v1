@@ -14,19 +14,20 @@ import TradingViewWidget from './TradingViewWidget';
 import { cn, formatTimeAgo, formatMarketCapValue } from "@/lib/utils";
 import CompanyLogo from './ui/CompanyLogo';
 import Link from 'next/link';
+import Image from 'next/image';
 import PriceAlertModal from './PriceAlertModal';
 import { addToWatchlist, removeFromWatchlist } from '@/lib/actions/watchlist.actions';
 import { toast } from 'sonner';
 
 interface StockDetailClientProps {
   symbol: string;
-  quote: any;
-  profile: any;
-  financials: any;
-  news: any[];
-  peers: any[];
-  recommendation: any[];
-  user: any;
+  quote: QuoteData;
+  profile: ProfileData;
+  financials: FinancialsData;
+  news: MarketNewsArticle[];
+  peers: PeerStockData[];
+  recommendation: RecommendationData[];
+  user: User;
   isInWatchlist: boolean;
 }
 
@@ -53,7 +54,7 @@ const StockDetailClient = ({
     const { strongBuy, buy, hold, sell, strongSell } = latestRec;
     if (!strongBuy && !buy && !hold && !sell && !strongSell) return "Neutral";
     const values = { strongBuy, buy, hold, sell, strongSell };
-    const maxKey = Object.keys(values).reduce((a, b) => values[a as keyof typeof values] > values[b as keyof typeof values] ? a : b);
+    const maxKey = Object.keys(values).reduce((a, b) => (values[a as keyof typeof values] || 0) > (values[b as keyof typeof values] || 0) ? a : b);
     
     const labels: Record<string, string> = {
       strongBuy: "Strong Buy",
@@ -137,10 +138,10 @@ const StockDetailClient = ({
                     <span className="text-4xl font-black tracking-tighter text-white">${quote.c?.toFixed(2)}</span>
                     <div className={cn(
                       "flex items-center gap-1 text-sm font-bold",
-                      quote.dp >= 0 ? "text-positive" : "text-negative"
+                      (quote.dp || 0) >= 0 ? "text-positive" : "text-negative"
                     )}>
-                      {quote.dp >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                      {quote.d?.toFixed(2)} ({quote.dp?.toFixed(2)}%)
+                       {(quote.dp || 0) >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                      {quote.d?.toFixed(2)} ({(quote.dp || 0).toFixed(2)}%)
                     </div>
                   </div>
                 </div>
@@ -228,7 +229,7 @@ const StockDetailClient = ({
                     className="absolute h-full bg-gradient-to-r from-negative via-yellow-500 to-positive transition-all duration-1000"
                     style={{ 
                       left: 0, 
-                      width: `${((quote.c - quote.l) / (quote.h - quote.l)) * 100}%` 
+                      width: `${(((quote.c || 0) - (quote.l || 0)) / ((quote.h || 1) - (quote.l || 0) || 1)) * 100}%` 
                     }}
                   />
                 </div>
@@ -285,7 +286,7 @@ const StockDetailClient = ({
                   { label: 'IPO Date', value: profile.ipo },
                   { label: 'Headquarters', value: profile.country },
                   { label: 'Float', value: profile.shareOutstanding ? profile.shareOutstanding.toFixed(2) + 'M' : 'N/A' },
-                  { label: 'Workforce', value: financials.metric?.['totalEmployees'] ? parseInt(financials.metric?.['totalEmployees']).toLocaleString() : 'N/A' },
+                  { label: 'Workforce', value: financials.metric?.['totalEmployees'] ? financials.metric?.['totalEmployees'].toLocaleString() : 'N/A' },
                 ].map((item, i) => (
                   <div key={i} className="flex justify-between items-center py-3 border-b border-zinc-900 last:border-0">
                     <span className="text-xs font-bold text-zinc-600 uppercase tracking-widest">{item.label}</span>
@@ -349,11 +350,12 @@ const StockDetailClient = ({
                       </a>
                     </div>
                     {article.image && (
-                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-800">
-                        <img 
+                      <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-800">
+                        <Image 
                           src={article.image} 
                           alt="" 
-                          className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-110 group-hover:scale-100" 
+                          fill
+                          className="object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-110 group-hover:scale-100" 
                         />
                       </div>
                     )}
@@ -398,7 +400,7 @@ const StockDetailClient = ({
                         "text-[10px] font-black font-mono",
                         (peer.quote?.dp || 0) >= 0 ? "text-positive" : "text-negative"
                       )}>
-                        {peer.quote?.dp >= 0 ? '+' : ''}{peer.quote?.dp?.toFixed(2)}%
+                        {(peer.quote?.dp || 0) >= 0 ? '+' : ''}{(peer.quote?.dp || 0).toFixed(2)}%
                       </div>
                     </div>
                   </Link>

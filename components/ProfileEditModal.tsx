@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, FieldError } from 'react-hook-form';
 import {
     Dialog,
     DialogContent,
@@ -102,7 +102,7 @@ const ProfileEditModal = ({ user, trigger }: ProfileEditModalProps) => {
                         name="country"
                         label="Country"
                         control={control}
-                        error={errors.country as any}
+                        error={errors.country as FieldError}
                     />
 
                     <SelectField
@@ -111,7 +111,7 @@ const ProfileEditModal = ({ user, trigger }: ProfileEditModalProps) => {
                         placeholder="Select your goal"
                         options={INVESTMENT_GOALS}
                         control={control}
-                        error={errors.investmentGoals as any}
+                        error={errors.investmentGoals as FieldError}
                     />
 
                     <SelectField
@@ -120,7 +120,7 @@ const ProfileEditModal = ({ user, trigger }: ProfileEditModalProps) => {
                         placeholder="Select your risk level"
                         options={RISK_TOLERANCE_OPTIONS}
                         control={control}
-                        error={errors.riskTolerance as any}
+                        error={errors.riskTolerance as FieldError}
                     />
 
                     <SelectField
@@ -129,7 +129,7 @@ const ProfileEditModal = ({ user, trigger }: ProfileEditModalProps) => {
                         placeholder="Select your industry"
                         options={PREFERRED_INDUSTRIES}
                         control={control}
-                        error={errors.preferredIndustry as any}
+                        error={errors.preferredIndustry as FieldError}
                     />
 
                     <div className="flex justify-end gap-3 mt-6">

@@ -60,14 +60,15 @@ export const validateArticle = (art: RawNewsArticle) => {
 
 export const formatArticle = (art: RawNewsArticle, hasTicker: boolean, ticker: string | undefined, idx: number): MarketNewsArticle => {
   return {
-    id: art.id || String(idx),
-    headline: art.headline,
-    summary: art.summary,
-    url: art.url,
+    id: art.id || idx,
+    headline: art.headline || "",
+    summary: art.summary || "",
+    source: art.source || "",
+    url: art.url || "",
+    datetime: art.datetime || 0,
+    category: art.category || "",
+    related: art.related || "",
     image: art.image,
-    source: art.source,
-    datetime: art.datetime,
-    related: hasTicker ? ticker : undefined
   };
 };
 

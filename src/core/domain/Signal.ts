@@ -18,7 +18,7 @@ export const SignalSchema = z.object({
     value: z.any()
   })),
   timestamp: z.date(),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.string(), z.any()).optional()
 });
 
 export type Signal = z.infer<typeof SignalSchema>;

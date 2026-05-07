@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 
 interface SearchPageClientProps {
   initialStocks: StockWithWatchlistStatus[];
-  user: any;
+  user: User;
   initialWatchlistSymbols: string[];
 }
 
@@ -124,7 +124,7 @@ export default function SearchPageClient({ initialStocks, user, initialWatchlist
                         setWatchlistSymbols(prev => new Set(prev).add(symbol));
                         toast.success(`${symbol} added to watchlist`);
                         router.refresh();
-                      } catch (err) {
+                      } catch {
                         toast.error("Failed to add to watchlist");
                       } finally {
                         setPendingSymbol(null);

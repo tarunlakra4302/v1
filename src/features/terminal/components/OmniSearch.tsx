@@ -107,7 +107,15 @@ export const OmniSearch = () => {
   );
 };
 
-const Item = ({ icon, label, sublabel, value, onSelect }: any) => (
+interface ItemProps {
+  icon?: React.ReactNode;
+  label: string;
+  sublabel?: string;
+  value?: string;
+  onSelect: () => void;
+}
+
+const Item = ({ icon, label, sublabel, value, onSelect }: ItemProps) => (
   <Command.Item
     value={value || label}
     onSelect={onSelect}

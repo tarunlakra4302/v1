@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { CommandDialog, CommandEmpty, CommandInput, CommandList } from "@/components/ui/command"
 import {Button} from "@/components/ui/button";
-import {Loader2,  TrendingUp} from "lucide-react";
+import {Loader2} from "lucide-react";
 import Link from "next/link";
 import {searchStocks} from "@/lib/actions/finnhub.actions";
 import {useDebounce} from "@/hooks/useDebounce";
@@ -37,7 +37,7 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [])
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if(!isSearchMode) return setStocks(initialStocks);
 
     setLoading(true)
@@ -49,13 +49,13 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
     } finally {
       setLoading(false)
     }
-  }
+  }, [isSearchMode, initialStocks, searchTerm]);
 
   const debouncedSearch = useDebounce(handleSearch, 300);
 
   useEffect(() => {
     debouncedSearch();
-  }, [searchTerm]);
+  }, [searchTerm, debouncedSearch]);
 
   const handleSelectStock = () => {
     setOpen(false);
@@ -92,7 +92,7 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
                 {isSearchMode ? 'Search results' : 'Popular stocks'}
                 {` `}({displayStocks?.length || 0})
               </div>
-              {displayStocks?.map((stock, i) => (
+              {displayStocks?.map((stock) => (
                   <li key={stock.symbol} className="search-item group">
                     <div className="flex items-center justify-between w-full p-2 hover:bg-zinc-900 rounded-xl transition-all">
                       <Link
@@ -139,7 +139,7 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
                             setWatchlistSymbols(prev => new Set(prev).add(symbol));
                             toast.success(`${symbol} added`);
                             router.refresh();
-                          } catch (err) {
+                          } catch {
                             toast.error("Error adding stock");
                           } finally {
                             setPendingSymbol(null);

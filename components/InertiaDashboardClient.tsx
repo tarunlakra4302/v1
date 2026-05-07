@@ -7,21 +7,21 @@ import {
   Trash2, 
   TrendingUp, 
   AlertCircle,
-  ExternalLink,
   ChevronRight,
   TrendingDown,
   BarChart2,
   Clock
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { deleteAlert } from '@/lib/actions/alert.actions';
 import { toast } from 'sonner';
 import { cn, formatTimeAgo } from '@/lib/utils';
 
 interface InertiaDashboardClientProps {
-  initialWatchlist: any[];
-  initialNews: any[];
-  initialAlerts: any[];
+  initialWatchlist: DashboardWatchlistItem[];
+  initialNews: MarketNewsArticle[];
+  initialAlerts: Alert[];
 }
 
 export default function InertiaDashboardClient({ 
@@ -102,7 +102,9 @@ export default function InertiaDashboardClient({
                     <div className="flex items-center gap-6">
                       <div className="w-14 h-14 bg-zinc-900 rounded-2xl flex items-center justify-center text-xl font-bold border border-zinc-800 group-hover:border-zinc-700 transition-colors">
                         {stock.image ? (
-                          <img src={stock.image} alt={stock.symbol} className="w-8 h-8 object-contain" />
+                          <div className="relative w-8 h-8">
+                            <Image src={stock.image} alt={stock.symbol} fill className="object-contain" />
+                          </div>
                         ) : (
                           stock.symbol[0]
                         )}
@@ -210,11 +212,12 @@ export default function InertiaDashboardClient({
                       </h3>
                     </div>
                     {item.image && (
-                      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all">
-                        <img 
+                      <div className="relative w-16 h-16 rounded-2xl overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all">
+                        <Image 
                           src={item.image} 
                           alt="" 
-                          className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" 
+                          fill
+                          className="object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" 
                         />
                       </div>
                     )}

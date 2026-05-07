@@ -13,6 +13,7 @@ const Layout = async ({ children }: { children : React.ReactNode }) => {
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
     const dbUser = await db?.collection('user').findOne({ 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         $or: [{ id: session.user.id }, { _id: session.user.id as any }] 
     });
 
