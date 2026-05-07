@@ -3,10 +3,12 @@ import { getAuth } from "@/lib/better-auth/auth";
 
 export async function GET(req: Request) {
     const auth = await getAuth();
-    return toNextJsHandler(auth).GET(req);
+    const handler = toNextJsHandler(auth);
+    return handler.GET!(req);
 }
 
 export async function POST(req: Request) {
     const auth = await getAuth();
-    return toNextJsHandler(auth).POST(req);
+    const handler = toNextJsHandler(auth);
+    return handler.POST!(req);
 }

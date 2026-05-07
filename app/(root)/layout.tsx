@@ -15,11 +15,13 @@ const Layout = async ({ children }: { children : React.ReactNode }) => {
 
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
+    
     if (!db) {
         console.error("Database connection failed in Layout");
-        return redirect('/error?message=Database connection failed');
+        redirect('/sign-in');
     }
-    const dbUser = await db?.collection('user').findOne({ 
+
+    const dbUser = await db.collection('user').findOne({ 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         $or: [{ id: session.user.id }, { _id: session.user.id as any }] 
     });
@@ -37,7 +39,6 @@ const Layout = async ({ children }: { children : React.ReactNode }) => {
 
     return (
         <main className="min-h-screen bg-[#050505]">
-            <OmniSearch />
             <Header user={user} />
             {children}
         </main>

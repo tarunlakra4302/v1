@@ -10,8 +10,14 @@ import { useRouter } from 'next/navigation';
 export const OmniSearch = () => {
   const { isOmniSearchOpen, toggleOmniSearch, setActiveTicker } = useTerminalStore();
   const router = useRouter();
+  const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!mounted) return;
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
@@ -20,13 +26,15 @@ export const OmniSearch = () => {
     };
     document.addEventListener('keydown', down);
     return () => document.removeEventListener('keydown', down);
-  }, [toggleOmniSearch]);
+  }, [toggleOmniSearch, mounted]);
 
   const handleSelectTicker = (ticker: string) => {
     setActiveTicker(ticker);
     toggleOmniSearch();
     router.push(`/stocks/${ticker.toLowerCase()}`);
   };
+
+  if (!mounted) return null;
 
   return (
     <AnimatePresence>

@@ -283,6 +283,7 @@ const DashboardOverview = ({
                         src={stock.image} 
                         name={stock.company} 
                         symbol={stock.symbol} 
+                        sizes="48px"
                       />
                     </div>
                     <div>
@@ -354,6 +355,7 @@ const DashboardOverview = ({
                             name={stock.company} 
                             symbol={stock.symbol} 
                             size="sm"
+                            sizes="32px"
                           />
                           <div className="flex flex-col">
                             <span className="font-black text-sm tracking-tight">{stock.symbol}</span>
@@ -444,6 +446,7 @@ const DashboardOverview = ({
                         src={article.image} 
                         alt="" 
                         fill
+                        sizes="(max-width: 768px) 100vw, 96px"
                         className="object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-110 group-hover:scale-100" 
                       />
                     </div>

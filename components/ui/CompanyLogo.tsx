@@ -10,9 +10,10 @@ interface CompanyLogoProps {
   symbol: string;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  sizes?: string;
 }
 
-const CompanyLogo = ({ src, name, symbol, className, size = 'md' }: CompanyLogoProps) => {
+const CompanyLogo = ({ src, name, symbol, className, size = 'md', sizes }: CompanyLogoProps) => {
   const [error, setError] = useState(false);
 
   // Fallback Clearbit URL if Finnhub logo is missing
@@ -42,6 +43,7 @@ const CompanyLogo = ({ src, name, symbol, className, size = 'md' }: CompanyLogoP
           src={currentSrc} 
           alt={name || symbol} 
           fill
+          sizes={sizes}
           className="object-contain p-1"
           onError={() => setError(true)}
         />
