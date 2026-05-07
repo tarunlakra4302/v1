@@ -1,4 +1,6 @@
-import { auth } from "@/lib/better-auth/auth";
+export const dynamic = "force-dynamic"; // Trigger HMR
+
+import { getAuth } from "@/lib/better-auth/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getWatchlistSymbolsByEmail } from "@/lib/actions/watchlist.actions";
@@ -19,6 +21,7 @@ import { GenerateAlphaSignal } from "@/src/core/use-cases/GenerateAlphaSignal";
 import { RiskEngine } from "@/src/core/services/RiskEngine";
 
 export default async function Home() {
+  const auth = await getAuth();
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (!session?.user) redirect('/sign-in');
