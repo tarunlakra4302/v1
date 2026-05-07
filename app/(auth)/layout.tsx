@@ -5,6 +5,8 @@ import {redirect} from "next/navigation";
 
 import {Star} from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 const Layout = async ({ children }: { children : React.ReactNode }) => {
     const auth = await getAuth();
     const session = await auth.api.getSession({ headers: await headers() })

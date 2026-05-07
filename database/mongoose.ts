@@ -23,12 +23,20 @@ if (!cached) {
 }
 
 export async function connectToDatabase() {
-  if (cached.conn) return cached.conn;
+  // If already connected, return the existing connection
+  if (cached.conn && mongoose.connection.readyState === 1) {
+    return cached.conn;
+  }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
+    const opts = {
       bufferCommands: false,
       serverSelectionTimeoutMS: 30000,
+      heartbeatFrequencyMS: 10000,
+    };
+
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((m) => {
+      return m;
     });
   }
 
@@ -36,7 +44,11 @@ export async function connectToDatabase() {
     cached.conn = await cached.promise;
   } catch (err) {
     cached.promise = null;
-    throw err;
+    // Sanitize error to prevent URI leak
+    const errorMessage = err instanceof Error ? err.message : 'Unknown database connection error';
+    const sanitizedError = errorMessage.replace(MONGODB_URI, '***MONGODB_URI***');
+    console.error('Database connection failed:', sanitizedError);
+    throw new Error('Database connection failed');
   }
 
   return cached.conn;

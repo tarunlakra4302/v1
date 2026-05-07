@@ -5,6 +5,8 @@ import {redirect} from "next/navigation";
 import {connectToDatabase} from "@/database/mongoose";
 import { OmniSearch } from "@/src/features/terminal/components/OmniSearch";
 
+export const dynamic = "force-dynamic";
+
 const Layout = async ({ children }: { children : React.ReactNode }) => {
     const auth = await getAuth();
     const session = await auth.api.getSession({ headers: await headers() });
@@ -13,6 +15,10 @@ const Layout = async ({ children }: { children : React.ReactNode }) => {
 
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
+    if (!db) {
+        console.error("Database connection failed in Layout");
+        return redirect('/error?message=Database connection failed');
+    }
     const dbUser = await db?.collection('user').findOne({ 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         $or: [{ id: session.user.id }, { _id: session.user.id as any }] 
