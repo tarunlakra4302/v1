@@ -12,24 +12,17 @@ async function fetchJSON<T>(url: string, revalidateSeconds?: number): Promise<T>
     ? { cache: 'force-cache', next: { revalidate: revalidateSeconds } }
     : { cache: 'no-store' };
 
-  try {
-    const res = await fetch(url, options);
-    
-    if (res.status === 429) {
-      throw new Error('Rate limit exceeded. Please try again later.');
-    }
-
-    if (!res.ok) {
-      const text = await res.text().catch(() => '');
-      throw new Error(`Fetch failed ${res.status}: ${text}`);
-    }
-    return (await res.json()) as T;
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    // Gracefully handle network errors without crashing the process
-    console.error(`Finnhub fetch error for ${url}:`, errorMessage);
-    throw error;
+  const res = await fetch(url, options);
+  
+  if (res.status === 429) {
+    throw new Error('Rate limit exceeded. Please try again later.');
   }
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => '');
+    throw new Error(`Fetch failed ${res.status}: ${text}`);
+  }
+  return (await res.json()) as T;
 }
 
 export async function getNews(symbols?: string[]): Promise<MarketNewsArticle[]> {
@@ -251,7 +244,8 @@ export async function getSentiment(symbol: string): Promise<SentimentData | null
     return await fetchJSON<SentimentData>(url, 3600);
   } catch (e: unknown) {
     // news-sentiment is a premium endpoint. Gracefully handle 403 for free tier users.
-    if (e instanceof Error && e.message?.includes('403')) {
+    // Also handle 401 Invalid API key gracefully to avoid spamming logs if key is invalid.
+    if (e instanceof Error && (e.message?.includes('403') || e.message?.includes('401'))) {
       return { buzz: { buzz: 0.5 }, sentiment: { bullishPercent: 0.5 } };
     }
     console.error('getSentiment error:', e);
