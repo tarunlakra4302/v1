@@ -7,6 +7,7 @@ import { getNews } from "@/lib/actions/finnhub.actions";
 import { getFormattedTodayDate } from "@/lib/utils";
 
 type UserForNewsEmail = {
+    id: string;
     email: string;
     name: string;
 };
@@ -103,7 +104,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
                     const newsContent = (part && 'text' in part ? part.text : null) || 'No market news.'
 
                     userNewsSummaries.push({ user, newsContent });
-                } catch {
+                } catch (e) {
                     console.error('Failed to summarize news for : ', user.email);
                     userNewsSummaries.push({ user, newsContent: null });
                 }

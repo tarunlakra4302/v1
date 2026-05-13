@@ -5,8 +5,6 @@ import {redirect} from "next/navigation";
 import {connectToDatabase} from "@/database/mongoose";
 import { OmniSearch } from "@/src/features/terminal/components/OmniSearch";
 
-import { ObjectId } from "mongodb";
-
 const Layout = async ({ children }: { children : React.ReactNode }) => {
     const session = await auth.api.getSession({ headers: await headers() });
 
@@ -14,22 +12,9 @@ const Layout = async ({ children }: { children : React.ReactNode }) => {
 
     const mongoose = await connectToDatabase();
     const db = mongoose.connection.db;
-    
-    // session.user.id might be a string that needs to be converted to ObjectId for _id field
-    let userId;
-    try {
-        userId = new ObjectId(session.user.id);
-    } catch {
-        userId = session.user.id;
-    }
-
     const dbUser = await db?.collection('user').findOne({ 
-        $or: [
-            { id: session.user.id }, 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            { _id: userId as any }
-        ] 
-    }) as User | null;
+        $or: [{ id: session.user.id }, { _id: session.user.id as any }] 
+    });
 
     const user = {
         id: session.user.id,

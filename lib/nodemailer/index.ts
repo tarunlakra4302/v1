@@ -15,7 +15,7 @@ export const sendWelcomeEmail = async ({ email, name, intro }: WelcomeEmailData)
         .replace('{{intro}}', intro);
 
     const mailOptions = {
-        from: `"Inertia" <hello@Inertia.com>`,
+        from: `"Inertia" <hello@inertia.com>`,
         to: email,
         subject: `Welcome to Inertia - your stock market toolkit is ready!`,
         text: 'Thanks for joining Inertia',
@@ -33,7 +33,7 @@ export const sendNewsSummaryEmail = async (
         .replace('{{newsContent}}', newsContent);
 
     const mailOptions = {
-        from: `"Inertia News" <hello@Inertia.com>`,
+        from: `"Inertia News" <hello@inertia.com>`,
         to: email,
         subject: `📈 Market News Summary Today - ${date}`,
         text: `Today's market news summary from Inertia`,

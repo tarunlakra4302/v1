@@ -13,7 +13,6 @@ import {
   BarChart3,
   Clock
 } from 'lucide-react';
-import Image from 'next/image';
 import CompanyLogo from './ui/CompanyLogo';
 import TradingViewWidget from './TradingViewWidget';
 import { cn, formatTimeAgo } from "@/lib/utils";
@@ -22,16 +21,14 @@ import { addToWatchlist } from '@/lib/actions/watchlist.actions';
 import { toast } from 'sonner';
 
 interface DashboardOverviewProps {
-  initialWatchlist: DashboardWatchlistItem[];
-  initialNews: MarketNewsArticle[];
-  initialIndices: IndexData[];
-  initialTopStocks: TopStockData[];
-  user: User;
+  initialWatchlist: any[];
+  initialNews: any[];
+  initialIndices: any[];
+  initialTopStocks: any[];
+  user: any;
   portfolioRisk: {
     var: number;
     sharpeRatio: number;
-    alphaCoverage: number;
-    signalVelocity: string;
   };
 }
 
@@ -71,7 +68,7 @@ const DashboardOverview = ({
     ETFs: 'AMEX:SPY',
   };
   const newsTabs = ['Active Feed', 'Sector News', 'Global Macro'];
-  const newsByTab: Record<string, MarketNewsArticle[]> = {
+  const newsByTab: Record<string, any[]> = {
     'Active Feed': initialNews,
     'Sector News': initialNews.filter((article) => Boolean(article.related)),
     'Global Macro': initialNews.filter((article) => {
@@ -80,7 +77,8 @@ const DashboardOverview = ({
     }),
   };
   const visibleNews = (newsByTab[activeNewsTab] || initialNews).slice(0, 4);
-  const handleAddToWatchlist = async (stock: TopStockData) => {
+
+  const handleAddToWatchlist = async (stock: any) => {
     if (!user?.email) {
       toast.error('You must be signed in to update your watchlist');
       return;
@@ -97,7 +95,7 @@ const DashboardOverview = ({
       await addToWatchlist({
         email: user.email,
         symbol,
-        company: stock.company || symbol,
+        company: stock.company || stock.name || symbol,
       });
 
       setWatchlistSymbols((prev) => new Set(prev).add(symbol));
@@ -146,7 +144,7 @@ const DashboardOverview = ({
           </div>
         </header>
 
-        {/* Inertia Risk Assessment Strip */}
+        {/* QuantFlow Risk Assessment Strip */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div className="bg-[#111111] border border-zinc-800 rounded-[24px] p-6 flex flex-col gap-2 group hover:border-negative/30 transition-all">
             <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-black">Portfolio VaR (95%)</span>
@@ -167,7 +165,7 @@ const DashboardOverview = ({
           <div className="bg-[#111111] border border-zinc-800 rounded-[24px] p-6 flex flex-col gap-2 group hover:border-blue-500/30 transition-all">
             <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-black">Signal Velocity</span>
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-mono font-black text-blue-500">{portfolioRisk.signalVelocity}</span>
+              <span className="text-2xl font-mono font-black text-blue-500">High</span>
               <Zap className="w-5 h-5 text-blue-500" />
             </div>
             <p className="text-[10px] text-zinc-600 italic">Market volatility signal detection</p>
@@ -175,7 +173,7 @@ const DashboardOverview = ({
           <div className="bg-[#111111] border border-zinc-800 rounded-[24px] p-6 flex flex-col gap-2 group hover:border-white/30 transition-all">
             <span className="text-[10px] uppercase tracking-[0.2em] text-zinc-600 font-black">Alpha Coverage</span>
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-mono font-black text-white">{portfolioRisk.alphaCoverage}%</span>
+              <span className="text-2xl font-mono font-black text-white">84%</span>
               <BarChart3 className="w-5 h-5 text-zinc-500" />
             </div>
             <p className="text-[10px] text-zinc-600 italic">Watchlist multi-factor saturation</p>
@@ -424,7 +422,7 @@ const DashboardOverview = ({
                     <div className="flex items-center gap-3 text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">
                       <span className="text-zinc-400">{article.source}</span>
                       <span className="w-1 h-1 bg-zinc-800 rounded-full" />
-                      <span suppressHydrationWarning>{formatTimeAgo(article.datetime)}</span>
+                      <span>{formatTimeAgo(article.datetime)}</span>
                     </div>
                     <h3 className="font-black leading-relaxed group-hover:text-positive transition-all line-clamp-2 text-sm tracking-tight">
                       {article.headline}
@@ -438,11 +436,10 @@ const DashboardOverview = ({
                     )}
                   </div>
                   {article.image && (
-                    <div className="w-24 h-24 rounded-[20px] overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all relative">
-                      <Image 
+                    <div className="w-24 h-24 rounded-[20px] overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all">
+                      <img 
                         src={article.image} 
                         alt="" 
-                        fill
                         className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-110 group-hover:scale-100" 
                       />
                     </div>

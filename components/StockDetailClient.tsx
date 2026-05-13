@@ -17,17 +17,16 @@ import Link from 'next/link';
 import PriceAlertModal from './PriceAlertModal';
 import { addToWatchlist, removeFromWatchlist } from '@/lib/actions/watchlist.actions';
 import { toast } from 'sonner';
-import Image from 'next/image';
 
 interface StockDetailClientProps {
   symbol: string;
-  quote: QuoteData;
-  profile: ProfileData;
-  financials: FinancialsData;
-  news: MarketNewsArticle[];
-  peers: PeerStockData[];
-  recommendation: RecommendationData[];
-  user: User;
+  quote: any;
+  profile: any;
+  financials: any;
+  news: any[];
+  peers: any[];
+  recommendation: any[];
+  user: any;
   isInWatchlist: boolean;
 }
 
@@ -49,7 +48,7 @@ const StockDetailClient = ({
   const timeframes = ['1D', '5D', '1M', '1Y', '5Y', 'All'];
 
   // Calculate recommendation label
-  const latestRec = (recommendation?.[0] || {}) as RecommendationData;
+  const latestRec = recommendation?.[0] || {};
   const getRecommendationLabel = () => {
     const { strongBuy, buy, hold, sell, strongSell } = latestRec;
     if (!strongBuy && !buy && !hold && !sell && !strongSell) return "Neutral";
@@ -138,9 +137,9 @@ const StockDetailClient = ({
                     <span className="text-4xl font-black tracking-tighter text-white">${quote.c?.toFixed(2)}</span>
                     <div className={cn(
                       "flex items-center gap-1 text-sm font-bold",
-                      (quote.dp ?? 0) >= 0 ? "text-positive" : "text-negative"
+                      quote.dp >= 0 ? "text-positive" : "text-negative"
                     )}>
-                      {(quote.dp ?? 0) >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                      {quote.dp >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
                       {quote.d?.toFixed(2)} ({quote.dp?.toFixed(2)}%)
                     </div>
                   </div>
@@ -211,31 +210,31 @@ const StockDetailClient = ({
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-[#0A0A0B] border border-zinc-900 rounded-2xl p-4 space-y-1">
                   <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Day Open</span>
-                  <div className="text-lg font-bold font-mono">${(quote.o ?? 0).toFixed(2)}</div>
+                  <div className="text-lg font-bold font-mono">${quote.o?.toFixed(2)}</div>
                 </div>
                 <div className="bg-[#0A0A0B] border border-zinc-900 rounded-2xl p-4 space-y-1">
                   <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Prev Close</span>
-                  <div className="text-lg font-bold font-mono">${(quote.pc ?? 0).toFixed(2)}</div>
+                  <div className="text-lg font-bold font-mono">${quote.pc?.toFixed(2)}</div>
                 </div>
               </div>
 
               <div className="space-y-4">
                 <div className="flex justify-between items-center px-1">
                   <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Day High</span>
-                  <span className="text-sm font-bold text-positive font-mono">${(quote.h ?? 0).toFixed(2)}</span>
+                  <span className="text-sm font-bold text-positive font-mono">${quote.h?.toFixed(2)}</span>
                 </div>
                 <div className="w-full h-1 bg-zinc-900 rounded-full overflow-hidden relative">
                    <div 
                     className="absolute h-full bg-gradient-to-r from-negative via-yellow-500 to-positive transition-all duration-1000"
                     style={{ 
                       left: 0, 
-                      width: `${(((quote.c ?? 0) - (quote.l ?? 0)) / (Math.max(1, (quote.h ?? 0) - (quote.l ?? 0)))) * 100}%` 
+                      width: `${((quote.c - quote.l) / (quote.h - quote.l)) * 100}%` 
                     }}
                   />
                 </div>
                 <div className="flex justify-between items-center px-1">
                   <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Day Low</span>
-                  <span className="text-sm font-bold text-negative font-mono">${(quote.l ?? 0).toFixed(2)}</span>
+                  <span className="text-sm font-bold text-negative font-mono">${quote.l?.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -246,7 +245,7 @@ const StockDetailClient = ({
                   { label: 'Market Cap', value: formatMarketCapValue(profile.marketCapitalization || 0), color: 'bg-blue-500' },
                   { label: 'P/E Ratio', value: financials.metric?.peExclExtraTTM?.toFixed(2) || 'N/A', color: 'bg-orange-500' },
                   { label: 'EPS (TTM)', value: financials.metric?.epsExclExtraItemsTTM?.toFixed(2) || 'N/A', color: 'bg-yellow-400' },
-                  { label: 'Dividend', value: financials.metric?.dividendYieldIndicatedAnnual ? (financials.metric?.dividendYieldIndicatedAnnual as number).toFixed(2) + '%' : '0.00%', color: 'bg-cyan-500' }
+                  { label: 'Dividend', value: financials.metric?.dividendYieldIndicatedAnnual ? (financials.metric?.dividendYieldIndicatedAnnual).toFixed(2) + '%' : '0.00%', color: 'bg-cyan-500' }
                 ].map((stat, i) => (
                   <div key={i} className="flex justify-between items-center group cursor-default">
                     <div className="flex items-center gap-2">
@@ -286,7 +285,7 @@ const StockDetailClient = ({
                   { label: 'IPO Date', value: profile.ipo },
                   { label: 'Headquarters', value: profile.country },
                   { label: 'Float', value: profile.shareOutstanding ? profile.shareOutstanding.toFixed(2) + 'M' : 'N/A' },
-                  { label: 'Workforce', value: financials.metric?.['totalEmployees'] ? Number(financials.metric?.['totalEmployees']).toLocaleString() : 'N/A' },
+                  { label: 'Workforce', value: financials.metric?.['totalEmployees'] ? parseInt(financials.metric?.['totalEmployees']).toLocaleString() : 'N/A' },
                 ].map((item, i) => (
                   <div key={i} className="flex justify-between items-center py-3 border-b border-zinc-900 last:border-0">
                     <span className="text-xs font-bold text-zinc-600 uppercase tracking-widest">{item.label}</span>
@@ -335,7 +334,7 @@ const StockDetailClient = ({
                       <div className="flex items-center gap-2 text-[9px] font-black text-zinc-600 uppercase tracking-[0.15em]">
                         <span className="text-zinc-400">{article.source}</span>
                         <span>•</span>
-                        <span suppressHydrationWarning>{formatTimeAgo(article.datetime)}</span>
+                        <span>{formatTimeAgo(article.datetime)}</span>
                       </div>
                       <h3 className="text-sm font-bold text-white leading-relaxed group-hover:text-positive transition-colors line-clamp-2">
                         {article.headline}
@@ -350,11 +349,10 @@ const StockDetailClient = ({
                       </a>
                     </div>
                     {article.image && (
-                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-800 relative">
-                        <Image 
+                      <div className="w-20 h-20 rounded-2xl overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-800">
+                        <img 
                           src={article.image} 
                           alt="" 
-                          fill
                           className="w-full h-full object-cover grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500 scale-110 group-hover:scale-100" 
                         />
                       </div>
@@ -398,9 +396,9 @@ const StockDetailClient = ({
                       <div className="text-sm font-bold text-white font-mono">${peer.quote?.c?.toFixed(2) || '0.00'}</div>
                       <div className={cn(
                         "text-[10px] font-black font-mono",
-                        (peer.quote?.dp ?? 0) >= 0 ? "text-positive" : "text-negative"
+                        (peer.quote?.dp || 0) >= 0 ? "text-positive" : "text-negative"
                       )}>
-                        {(peer.quote?.dp ?? 0) >= 0 ? '+' : ''}{(peer.quote?.dp ?? 0).toFixed(2)}%
+                        {peer.quote?.dp >= 0 ? '+' : ''}{peer.quote?.dp?.toFixed(2)}%
                       </div>
                     </div>
                   </Link>

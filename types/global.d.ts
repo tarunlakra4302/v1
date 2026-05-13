@@ -59,7 +59,10 @@ declare global {
         renderAs?: 'button' | 'text';
         label?: string;
         initialStocks: StockWithWatchlistStatus[];
-        user?: User;
+        user?: {
+            name: string;
+            email: string;
+        };
         initialWatchlistSymbols?: string[];
     };
 
@@ -73,7 +76,7 @@ declare global {
         id: string;
         name: string;
         email: string;
-        image?: string | null;
+        image?: string;
         country?: string;
         investmentGoals?: string;
         riskTolerance?: string;
@@ -276,27 +279,6 @@ declare global {
         low: number;
         close: number;
         price: number;
-    };
-
-    type SentimentData = {
-        buzz: { buzz: number };
-        sentiment: { bullishPercent: number };
-    };
-
-    type PeerStockData = {
-        symbol: string;
-        quote: QuoteData;
-        profile: ProfileData;
-    };
-
-    type RecommendationData = {
-        buy: number;
-        hold: number;
-        sell: number;
-        strongBuy: number;
-        strongSell: number;
-        period: string;
-        symbol: string;
     };
 
     type DashboardProps = {

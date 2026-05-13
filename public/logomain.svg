@@ -1,6 +1,5 @@
 <svg width="101" height="37" viewBox="0 0 101 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Background -->
-  <rect width="101" height="37" fill="#000000"></rect>
+  <!-- Logo Elements -->
 
   <!-- Left bars -->
   <rect x="8" y="16" width="10" height="18" rx="2" fill="#00E6A8"></rect>
@@ -9,6 +8,6 @@
 
   <!-- Text -->
   <text x="48" y="28" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="-0.5">
-    QuantFlow
+    Inertia
   </text>
 </svg>

@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Loader2, Search, Plus } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 import CompanyLogo from "./ui/CompanyLogo";
 import { searchStocks } from "@/lib/actions/finnhub.actions";
 import { useDebounce } from "@/hooks/useDebounce";
 import { cn } from "@/lib/utils";
+import { Plus } from "lucide-react";
 import { addToWatchlist } from "@/lib/actions/watchlist.actions";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 interface SearchPageClientProps {
   initialStocks: StockWithWatchlistStatus[];
-  user: User;
+  user: any;
   initialWatchlistSymbols: string[];
 }
 
@@ -123,7 +124,7 @@ export default function SearchPageClient({ initialStocks, user, initialWatchlist
                         setWatchlistSymbols(prev => new Set(prev).add(symbol));
                         toast.success(`${symbol} added to watchlist`);
                         router.refresh();
-                      } catch {
+                      } catch (err) {
                         toast.error("Failed to add to watchlist");
                       } finally {
                         setPendingSymbol(null);

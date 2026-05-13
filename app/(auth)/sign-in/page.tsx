@@ -1,13 +1,13 @@
 'use client';
 
-import Link from "next/link";
-import {useForm} from "react-hook-form";
-import {Button} from "@/components/ui/button";
-import InputField from "@/components/forms/InputField";
-import FooterLink from "@/components/forms/FooterLink";
-import {signInWithEmail} from "@/lib/actions/auth.actions";
-import {useRouter} from "next/navigation";
+import { useForm } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import InputField from '@/components/forms/InputField';
+import FooterLink from '@/components/forms/FooterLink';
+import {signInWithEmail, signUpWithEmail} from "@/lib/actions/auth.actions";
 import {toast} from "sonner";
+import {signInEmail} from "better-auth/api";
+import {useRouter} from "next/navigation";
 
 const SignIn = () => {
     const router = useRouter()
@@ -20,58 +20,33 @@ const SignIn = () => {
             email: '',
             password: '',
         },
-        mode: 'onBlur'
+        mode: 'onBlur',
     });
 
     const onSubmit = async (data: SignInFormData) => {
         try {
             const result = await signInWithEmail(data);
-            if(result.success) {
-                toast.success('Signed in successfully');
-                router.push('/');
-                router.refresh();
-            } else {
-                toast.error('Sign in failed', {
-                    description: result.error || 'Invalid email or password.'
-                })
-            }
+            if(result.success) router.push('/');
         } catch (e) {
             console.error(e);
             toast.error('Sign in failed', {
-                description: 'Something went wrong. Please try again.'
+                description: e instanceof Error ? e.message : 'Failed to sign in.'
             })
         }
     }
 
     return (
         <>
-            <Link href="/" className="mb-10 inline-block">
-                <svg width="101" height="37" viewBox="0 0 101 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="8" y="16" width="10" height="18" rx="2" fill="#00E6A8"></rect>
-                    <rect x="20" y="10" width="10" height="24" rx="2" fill="#F2C94C"></rect>
-                    <rect x="32" y="14" width="10" height="20" rx="2" fill="#FF5A5F"></rect>
-                    <text x="48" y="28" fill="white" fontFamily="Arial, Helvetica, sans-serif" fontSize="18" fontWeight="700" letterSpacing="-0.5">
-                        Inertia
-                    </text>
-                </svg>
-            </Link>
-            <h1 className="form-title">Welcome Back</h1>
-            <p className="text-gray-500 mb-8 -mt-8">Log in to your Inertia account to continue</p>
+            <h1 className="form-title">Welcome back</h1>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <InputField
                     name="email"
                     label="Email"
-                    placeholder="contact@Inertia.com"
+                    placeholder="contact@inertia.com"
                     register={register}
                     error={errors.email}
-                    validation={{ 
-                        required: 'Email is required', 
-                        pattern: {
-                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                            message: 'Invalid email address'
-                        }
-                    }}
+                    validation={{ required: 'Email is required', pattern: /^\w+@\w+\.\w+$/ }}
                 />
 
                 <InputField
@@ -81,16 +56,16 @@ const SignIn = () => {
                     type="password"
                     register={register}
                     error={errors.password}
-                    validation={{ required: 'Password is required' }}
+                    validation={{ required: 'Password is required', minLength: 8 }}
                 />
 
                 <Button type="submit" disabled={isSubmitting} className="yellow-btn w-full mt-5">
-                    {isSubmitting ? 'Signing In...' : 'Log In'}
+                    {isSubmitting ? 'Signing In' : 'Sign In'}
                 </Button>
 
-                <FooterLink text="Don't have an account?" linkText="Sign up" href="/sign-up" />
+                <FooterLink text="Don't have an account?" linkText="Create an account" href="/sign-up" />
             </form>
         </>
-    )
-}
+    );
+};
 export default SignIn;

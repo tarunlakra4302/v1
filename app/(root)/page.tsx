@@ -14,7 +14,7 @@ import {
 import { formatPrice, formatChangePercent, formatMarketCapValue } from "@/lib/utils";
 import DashboardOverview from "@/components/DashboardOverview";
 
-// Inertia Core Imports
+// QuantFlow Core Imports
 import { GenerateAlphaSignal } from "@/src/core/use-cases/GenerateAlphaSignal";
 import { RiskEngine } from "@/src/core/services/RiskEngine";
 
@@ -27,26 +27,30 @@ export default async function Home() {
   
   const alphaOrchestrator = new GenerateAlphaSignal();
 
+  // Fetch indices for macro context
+  const indices = await getMarketIndices();
+  const spyIndex = indices.find(i => i.symbol === 'SPY');
+  const macroScore = spyIndex ? (spyIndex.change + 1) * 50 : 75; // Map -1% to 1% to 0-100
+
   // Fetch data for each symbol in the watchlist
   const watchlistData = await Promise.all(
     symbols.map(async (symbol) => {
       try {
-        const [quote, profile, financials] = await Promise.all([
+        const [quote, profile, financials, sentimentData] = await Promise.all([
           getQuote(symbol),
           getStockProfile(symbol),
-          getBasicFinancials(symbol)
+          getBasicFinancials(symbol),
+          getSentiment(symbol)
         ]);
 
-        const sentimentData = await getSentiment(symbol);
-        const sentimentScore = sentimentData?.sentiment?.bullishPercent !== undefined 
-          ? sentimentData.sentiment.bullishPercent * 100 
-          : 50;
+        // Map sentiment to 0-100
+        const sentimentScore = (sentimentData?.sentiment?.bullishPercent || 0.5) * 100;
 
-        // Inertia: Calculate Alpha Score
+        // QuantFlow: Calculate Alpha Score
         const alphaReport = await alphaOrchestrator.execute(symbol, {
-          sentiment: sentimentScore, 
+          sentiment: sentimentScore,
           technical: (quote.dp || 0) + 50, // Relative strength proxy
-          macro: 75 // Market trend proxy
+          macro: macroScore
         });
 
         return {
@@ -58,9 +62,9 @@ export default async function Home() {
           marketCap: formatMarketCapValue(profile.marketCapitalization || 0),
           peRatio: financials.metric?.peExclExtraTTM?.toFixed(1) || "N/A",
           image: profile.logo,
-          // Inertia Additions
+          // QuantFlow Additions
           alphaScore: alphaReport.aggregateScore,
-          volatility: (financials.metric?.['3MonthPriceReturnDaily'] as number) || 0.02 // Proxy for volatility
+          volatility: typeof financials.metric?.['3MonthPriceReturnDaily'] === 'number' ? financials.metric['3MonthPriceReturnDaily'] : 0.02
         };
       } catch (err) {
         console.error(`Error fetching data for ${symbol}:`, err);
@@ -80,7 +84,7 @@ export default async function Home() {
     })
   );
 
-  // Inertia: Calculate Portfolio Risk (VaR)
+  // QuantFlow: Calculate Portfolio Risk (VaR)
   const portfolioPositions = watchlistData
     .filter(s => s.price !== "N/A")
     .map(s => ({
@@ -90,23 +94,14 @@ export default async function Home() {
 
   const portfolioRisk = {
     var: portfolioPositions.length > 0 ? RiskEngine.calculateVaR(portfolioPositions) : 0,
-    sharpeRatio: RiskEngine.calculateSharpeRatio(0.12, 0.04, 0.15), // Example market-wide sharpe
-    alphaCoverage: watchlistData.length > 0 
-      ? Math.round((watchlistData.filter(s => s.alphaScore > 50).length / watchlistData.length) * 100) 
-      : 0,
-    signalVelocity: portfolioPositions.length > 0 
-      ? (portfolioPositions.reduce((sum, p) => sum + p.volatility, 0) / portfolioPositions.length > 0.03 ? "High" : "Medium")
-      : "Low"
+    sharpeRatio: RiskEngine.calculateSharpeRatio(0.12, 0.04, 0.15) // Example market-wide sharpe
   };
 
   // Fetch real news based on watchlist symbols or general market news
   const news = await getNews(symbols.length > 0 ? symbols : undefined);
 
-  // Fetch new dashboard data in parallel
-  const [indices, topStocks] = await Promise.all([
-    getMarketIndices(),
-    getTopStocks()
-  ]);
+  // Fetch top stocks (indices already fetched above)
+  const topStocks = await getTopStocks();
 
   return (
     <DashboardOverview 
@@ -115,7 +110,7 @@ export default async function Home() {
       initialIndices={indices}
       initialTopStocks={topStocks}
       user={session.user}
-      // Inertia Additions
+      // QuantFlow Additions
       portfolioRisk={portfolioRisk}
     />
   );

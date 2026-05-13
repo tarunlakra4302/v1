@@ -122,11 +122,11 @@ export const searchStocks = cache(async (query?: string): Promise<StockWithWatch
           try {
             const url = `${FINNHUB_BASE_URL}/stock/profile2?symbol=${encodeURIComponent(sym)}&token=${token}`;
             // Revalidate every hour
-            const profile = await fetchJSON<ProfileData>(url, 3600);
-            return { sym, profile } as { sym: string; profile: ProfileData };
+            const profile = await fetchJSON<any>(url, 3600);
+            return { sym, profile } as { sym: string; profile: any };
           } catch (e) {
             console.error('Error fetching profile2 for', sym, e);
-            return { sym, profile: null } as { sym: string; profile: ProfileData | null };
+            return { sym, profile: null } as { sym: string; profile: any };
           }
         })
       );
@@ -146,7 +146,7 @@ export const searchStocks = cache(async (query?: string): Promise<StockWithWatch
           // We don't include exchange in FinnhubSearchResult type, so carry via mapping later using profile
           // To keep pipeline simple, attach exchange via closure map stage
           // We'll reconstruct exchange when mapping to final type
-          (r as FinnhubSearchResult & { __exchange?: string }).__exchange = exchange; // internal only
+          (r as any).__exchange = exchange; // internal only
           return r;
         })
         .filter((x): x is FinnhubSearchResult => Boolean(x));
@@ -161,7 +161,7 @@ export const searchStocks = cache(async (query?: string): Promise<StockWithWatch
         const upper = (r.symbol || '').toUpperCase();
         const name = r.description || upper;
         const exchangeFromDisplay = (r.displaySymbol as string | undefined) || undefined;
-        const exchangeFromProfile = (r as FinnhubSearchResult & { __exchange?: string }).__exchange as string | undefined;
+        const exchangeFromProfile = (r as any).__exchange as string | undefined;
         const exchange = exchangeFromDisplay || exchangeFromProfile || 'US';
         const type = r.type || 'Stock';
         const item: StockWithWatchlistStatus = {
@@ -226,26 +226,25 @@ export async function getPeers(symbol: string): Promise<string[]> {
   }
 }
 
-export async function getRecommendation(symbol: string): Promise<RecommendationData[]> {
+export async function getRecommendation(symbol: string): Promise<any[]> {
   try {
     const token = process.env.FINNHUB_API_KEY ?? NEXT_PUBLIC_FINNHUB_API_KEY;
     const url = `${FINNHUB_BASE_URL}/stock/recommendation?symbol=${symbol.toUpperCase()}&token=${token}`;
-    return await fetchJSON<RecommendationData[]>(url, 3600);
+    return await fetchJSON<any[]>(url, 3600);
   } catch (e) {
     console.error('getRecommendation error:', e);
     return [];
   }
 }
 
-export async function getSentiment(symbol: string): Promise<SentimentData | null> {
+export async function getSentiment(symbol: string): Promise<any> {
   try {
     const token = process.env.FINNHUB_API_KEY ?? NEXT_PUBLIC_FINNHUB_API_KEY;
     const url = `${FINNHUB_BASE_URL}/news-sentiment?symbol=${symbol.toUpperCase()}&token=${token}`;
-    return await fetchJSON<SentimentData>(url, 3600);
-  } catch (e: unknown) {
+    return await fetchJSON<any>(url, 3600);
+  } catch (e: any) {
     // news-sentiment is a premium endpoint. Gracefully handle 403 for free tier users.
-    // Also handle 401 Invalid API key gracefully to avoid spamming logs if key is invalid.
-    if (e instanceof Error && (e.message?.includes('403') || e.message?.includes('401'))) {
+    if (e.message?.includes('403')) {
       return { buzz: { buzz: 0.5 }, sentiment: { bullishPercent: 0.5 } };
     }
     console.error('getSentiment error:', e);
@@ -253,13 +252,13 @@ export async function getSentiment(symbol: string): Promise<SentimentData | null
   }
 }
 
-export async function getStockCandles(symbol: string, resolution: string = 'D', days: number = 30): Promise<ChartPoint[]> {
+export async function getStockCandles(symbol: string, resolution: string = 'D', days: number = 30): Promise<any> {
   try {
     const token = process.env.FINNHUB_API_KEY ?? NEXT_PUBLIC_FINNHUB_API_KEY;
     const to = Math.floor(Date.now() / 1000);
     const from = to - (days * 24 * 60 * 60);
     const url = `${FINNHUB_BASE_URL}/stock/candle?symbol=${symbol.toUpperCase()}&resolution=${resolution}&from=${from}&to=${to}&token=${token}`;
-    const data = await fetchJSON<{ s: string, c: number[], t: number[], o: number[], h: number[], l: number[] }>(url, 60); // Cache for 1 minute for better real-time charts
+    const data = await fetchJSON<any>(url, 60); // Cache for 1 minute for better real-time charts
     
     if (data.s !== 'ok') return [];
     
@@ -273,9 +272,9 @@ export async function getStockCandles(symbol: string, resolution: string = 'D', 
       close: data.c[idx],
       price: price // Still keep price for simple line charts
     }));
-  } catch (e: unknown) {
+  } catch (e: any) {
     // Gracefully handle 403 Forbidden (common for free tier keys on certain symbols or resolutions)
-    if (e instanceof Error && e.message?.includes('403')) {
+    if (e.message?.includes('403')) {
       return [];
     }
     console.error('getStockCandles error:', e);
@@ -283,7 +282,7 @@ export async function getStockCandles(symbol: string, resolution: string = 'D', 
   }
 }
 
-export async function getMarketIndices(): Promise<IndexData[]> {
+export async function getMarketIndices(): Promise<any[]> {
   const indices = [
     { symbol: 'SPY', name: 'S&P 500' },
     { symbol: 'QQQ', name: 'Nasdaq 100' },
@@ -310,7 +309,7 @@ export async function getMarketIndices(): Promise<IndexData[]> {
   }
 }
 
-export async function getTopStocks(): Promise<TopStockData[]> {
+export async function getTopStocks(): Promise<any[]> {
   // Use a subset of popular symbols to find top gainers
   const pool = POPULAR_STOCK_SYMBOLS.slice(0, 15);
   

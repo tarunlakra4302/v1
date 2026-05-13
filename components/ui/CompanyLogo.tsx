@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { cn } from "@/lib/utils";
-import Image from 'next/image';
 
 interface CompanyLogoProps {
   src?: string;
@@ -38,10 +37,9 @@ const CompanyLogo = ({ src, name, symbol, className, size = 'md' }: CompanyLogoP
         sizeClasses[size],
         className
       )}>
-        <Image 
+        <img 
           src={currentSrc} 
           alt={name || symbol} 
-          fill
           className="w-full h-full object-contain p-1"
           onError={() => setError(true)}
         />

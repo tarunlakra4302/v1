@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Image from "next/image";
 import {auth} from "@/lib/better-auth/auth";
 import {headers} from "next/headers";
@@ -13,6 +14,10 @@ const Layout = async ({ children }: { children : React.ReactNode }) => {
     return (
         <main className="auth-layout">
             <section className="auth-left-section scrollbar-hide-default">
+                <Link href="/" className="auth-logo">
+                    <img src="/logomain.svg" alt="Inertia logo" className='h-10 w-auto' />
+                </Link>
+
                 <div className="pb-6 lg:pb-8 flex-1">{children}</div>
             </section>
 

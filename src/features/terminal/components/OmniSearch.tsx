@@ -68,19 +68,19 @@ export const OmniSearch = () => {
                     icon={<Zap className="h-4 w-4 text-positive" />} 
                     label="Generate Alpha Signal" 
                     value="/analyze" 
-                    onSelect={() => { console.log('Analyze'); toggleOmniSearch(); }} 
+                    onSelect={() => { toggleOmniSearch(); }} 
                   />
                   <Item 
                     icon={<ShieldAlert className="h-4 w-4 text-negative" />} 
                     label="Run Risk Simulation" 
                     value="/risk" 
-                    onSelect={() => { console.log('Risk'); toggleOmniSearch(); }} 
+                    onSelect={() => { toggleOmniSearch(); }} 
                   />
                   <Item 
                     icon={<BarChart3 className="h-4 w-4 text-blue-500" />} 
                     label="Optimize Portfolio" 
                     value="/optimize" 
-                    onSelect={() => { console.log('Optimize'); toggleOmniSearch(); }} 
+                    onSelect={() => { toggleOmniSearch(); }} 
                   />
                 </Command.Group>
 
@@ -107,15 +107,7 @@ export const OmniSearch = () => {
   );
 };
 
-interface ItemProps {
-  icon?: React.ReactNode;
-  label: string;
-  sublabel?: string;
-  value?: string;
-  onSelect: () => void;
-}
-
-const Item = ({ icon, label, sublabel, value, onSelect }: ItemProps) => (
+const Item = ({ icon, label, sublabel, value, onSelect }: any) => (
   <Command.Item
     value={value || label}
     onSelect={onSelect}

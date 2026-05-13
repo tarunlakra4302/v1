@@ -7,21 +7,21 @@ import {
   Trash2, 
   TrendingUp, 
   AlertCircle,
+  ExternalLink,
   ChevronRight,
   TrendingDown,
   BarChart2,
   Clock
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import { deleteAlert } from '@/lib/actions/alert.actions';
 import { toast } from 'sonner';
 import { cn, formatTimeAgo } from '@/lib/utils';
 
 interface InertiaDashboardClientProps {
-  initialWatchlist: DashboardWatchlistItem[];
-  initialNews: MarketNewsArticle[];
-  initialAlerts: Alert[];
+  initialWatchlist: any[];
+  initialNews: any[];
+  initialAlerts: any[];
 }
 
 export default function InertiaDashboardClient({ 
@@ -100,9 +100,9 @@ export default function InertiaDashboardClient({
                     className="group bg-[#0A0A0A] hover:bg-[#0F0F0F] border border-zinc-900 hover:border-zinc-800 rounded-[32px] p-6 transition-all cursor-pointer flex items-center justify-between"
                   >
                     <div className="flex items-center gap-6">
-                      <div className="w-14 h-14 bg-zinc-900 rounded-2xl flex items-center justify-center text-xl font-bold border border-zinc-800 group-hover:border-zinc-700 transition-colors relative">
+                      <div className="w-14 h-14 bg-zinc-900 rounded-2xl flex items-center justify-center text-xl font-bold border border-zinc-800 group-hover:border-zinc-700 transition-colors">
                         {stock.image ? (
-                          <Image src={stock.image} alt={stock.symbol} fill className="w-8 h-8 object-contain p-2" />
+                          <img src={stock.image} alt={stock.symbol} className="w-8 h-8 object-contain" />
                         ) : (
                           stock.symbol[0]
                         )}
@@ -160,7 +160,7 @@ export default function InertiaDashboardClient({
                   <p className="text-sm text-zinc-600 italic">No alerts configured yet.</p>
                 ) : (
                   initialAlerts.map((alert) => (
-                    <div key={alert.id} className="group bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-4 flex items-center justify-between">
+                    <div key={alert._id} className="group bg-zinc-900/30 border border-zinc-800/50 rounded-2xl p-4 flex items-center justify-between">
                       <div>
                         <div className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-1">{alert.symbol}</div>
                         <div className="text-sm font-medium">Price {alert.alertType === 'upper' ? '>' : '<'} ${alert.threshold}</div>
@@ -168,12 +168,12 @@ export default function InertiaDashboardClient({
                       <button 
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleDeleteAlert(alert.id);
+                          handleDeleteAlert(alert._id);
                         }}
-                        disabled={isDeleting === alert.id}
+                        disabled={isDeleting === alert._id}
                         className="w-8 h-8 rounded-full flex items-center justify-center text-zinc-600 hover:bg-negative/10 hover:text-negative transition-all disabled:opacity-50"
                       >
-                        <Trash2 className={cn("w-4 h-4", isDeleting === alert.id && "animate-pulse")} />
+                        <Trash2 className={cn("w-4 h-4", isDeleting === alert._id && "animate-pulse")} />
                       </button>
                     </div>
                   ))
@@ -210,11 +210,10 @@ export default function InertiaDashboardClient({
                       </h3>
                     </div>
                     {item.image && (
-                      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all relative">
-                        <Image 
+                      <div className="w-16 h-16 rounded-2xl overflow-hidden bg-zinc-900 flex-shrink-0 border border-zinc-900 group-hover:border-zinc-700 transition-all">
+                        <img 
                           src={item.image} 
                           alt="" 
-                          fill
                           className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500" 
                         />
                       </div>

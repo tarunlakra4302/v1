@@ -101,9 +101,8 @@ const ProfileEditModal = ({ user, trigger }: ProfileEditModalProps) => {
                     <CountrySelectField
                         name="country"
                         label="Country"
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        control={control as any}
-                        error={errors.country}
+                        control={control}
+                        error={errors.country as any}
                     />
 
                     <SelectField
@@ -112,7 +111,7 @@ const ProfileEditModal = ({ user, trigger }: ProfileEditModalProps) => {
                         placeholder="Select your goal"
                         options={INVESTMENT_GOALS}
                         control={control}
-                        error={errors.investmentGoals}
+                        error={errors.investmentGoals as any}
                     />
 
                     <SelectField
@@ -121,7 +120,7 @@ const ProfileEditModal = ({ user, trigger }: ProfileEditModalProps) => {
                         placeholder="Select your risk level"
                         options={RISK_TOLERANCE_OPTIONS}
                         control={control}
-                        error={errors.riskTolerance}
+                        error={errors.riskTolerance as any}
                     />
 
                     <SelectField
@@ -130,7 +129,7 @@ const ProfileEditModal = ({ user, trigger }: ProfileEditModalProps) => {
                         placeholder="Select your industry"
                         options={PREFERRED_INDUSTRIES}
                         control={control}
-                        error={errors.preferredIndustry}
+                        error={errors.preferredIndustry as any}
                     />
 
                     <div className="flex justify-end gap-3 mt-6">

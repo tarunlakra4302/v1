@@ -29,7 +29,7 @@ export const useTerminalStore = create<TerminalState>()(
       })),
     }),
     {
-      name: 'QuantFlow-terminal-settings',
+      name: 'quantflow-terminal-settings',
       partialize: (state) => ({ viewMode: state.viewMode }),
     }
   )
